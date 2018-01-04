@@ -37,6 +37,12 @@ void wait_for_enter(const std::string& msg)
     std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 }
 
+void invokeVivadoDebugScript(const std::string& msg)
+{
+    std::cout << msg << std::endl;
+    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+}
+
 int main(int argc, char** argv)
 {
     int size = DATA_SIZE;
@@ -71,7 +77,12 @@ int main(int argc, char** argv)
     devices.resize(1);
     cl::Program program(context, devices, bins);
     cl::Kernel krnl_vadd(program,"krnl_vadd_rtl");
-	wait_for_enter("\nPress ENTER to continue after setting up ILA trigger...");
+
+	//if (interactive == true)
+		//wait_for_enter("\nPress ENTER to continue after setting up ILA trigger...");
+	//else
+		// call script/socket to invoke Vivado, connect to server, XVC target, set probe files, setup ILA triggers and arm ILA 
+		//invokeVivadoDebugScript();
 
     //Allocate Buffer in Global Memory
     std::vector<cl::Memory> inBufVec, outBufVec;

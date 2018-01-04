@@ -40,9 +40,8 @@ create_project -force kernel_pack $path_to_tmp_project
 add_files -norecurse [glob $path_to_hdl/*.v $path_to_hdl/*.sv]
 create_ip -name ila -vendor xilinx.com -library ip -version 6.2 -module_name ila_0
 set_property -dict [list CONFIG.C_PROBE6_WIDTH {32} CONFIG.C_PROBE3_WIDTH {64} CONFIG.C_NUM_OF_PROBES {7} CONFIG.C_EN_STRG_QUAL {1} CONFIG.C_INPUT_PIPE_STAGES {2} CONFIG.C_ADV_TRIGGER {true} CONFIG.ALL_PROBE_SAME_MU_CNT {4} CONFIG.C_PROBE6_MU_CNT {4} CONFIG.C_PROBE5_MU_CNT {4} CONFIG.C_PROBE4_MU_CNT {4} CONFIG.C_PROBE3_MU_CNT {4} CONFIG.C_PROBE2_MU_CNT {4} CONFIG.C_PROBE1_MU_CNT {4} CONFIG.C_PROBE0_MU_CNT {4}] [get_ips ila_0]
-generate_target {instantiation_template} [get_files /group/dspusers-xco/chenp/sdx/rtl_vadd_ip_ila/project_1/project_1.srcs/sources_1/ip/ila_0/ila_0.xci]
-set_property generate_synth_checkpoint false [get_files ila_0.xci]
 generate_target {instantiation_template} [get_files ila_0.xci]
+set_property generate_synth_checkpoint false [get_files ila_0.xci]
 update_compile_order -fileset sources_1
 update_compile_order -fileset sim_1
 
@@ -50,6 +49,8 @@ ipx::package_project -root_dir $path_to_packaged -vendor xilinx.com -library RTL
 ipx::unload_core $path_to_packaged/component.xml
 ipx::edit_ip_in_project -upgrade true -name tmp_edit_project -directory $path_to_packaged $path_to_packaged/component.xml
 set_property core_revision 2 [ipx::current_core]
+set_property sdx_kernel true [ipx::current_core]
+set_property sdx_kernel_type rtl [ipx::current_core]
 ipx::create_xgui_files [ipx::current_core]
 ipx::associate_bus_interfaces -busif m_axi_gmem -clock ap_clk [ipx::current_core]
 ipx::associate_bus_interfaces -busif s_axi_control -clock ap_clk [ipx::current_core]

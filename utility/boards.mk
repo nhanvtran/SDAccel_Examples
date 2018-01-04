@@ -2,14 +2,19 @@
 # 'estimate' for estimate report generation
 # 'system' for system report generation
 REPORT:=none
+PROFILE ?= no
 
 # Default C++ Compiler Flags and xocc compiler flags
-CXXFLAGS:=-Wall -O0 -g
+CXXFLAGS:=-Wall -O0 -g -std=c++14
 CLFLAGS:= --xp "param:compiler.preserveHlsOutput=1" --xp "param:compiler.generateExtraRunData=true" -s
 
 ifneq ($(REPORT),none)
 CLFLAGS += --report $(REPORT)
 endif 
+
+ifeq ($(PROFILE),yes)
+CLFLAGS += --profile_kernel data:all:all:all
+endif
 
 LDCLFLAGS:=$(CLFLAGS)
 
@@ -21,8 +26,7 @@ ifndef XILINX_SDACCEL
 $(error XILINX_SDX or XILINX_SDACCEL is not set. Please source the SDx settings64.{csh,sh} script before attempting to run examples)
 endif
 
-VIVADO=$(XILINX_SDX)/Vivado/bin/vivado
-
+VIVADO=$(XILINX_VIVADO)/bin/vivado
 
 # Use the Xilinx OpenCL compiler
 CLC:=$(XILINX_SDACCEL)/bin/xocc
@@ -32,11 +36,11 @@ EMCONFIGUTIL := $(XILINX_SDACCEL)/bin/emconfigutil
 # By default build for X86, this could also be set to POWER to build for power
 ARCH:=X86
 
+DEVICES:= xilinx:kcu1500:dynamic
+
 ifeq ($(ARCH),POWER)
-DEVICES:= xilinx:adm-pcie-7v3:1ddr-ppc64le
 CXX:=$(XILINX_SDACCEL)/gnu/ppc64le/4.9.3/lnx64/bin/powerpc64le-linux-gnu-g++
 else
-DEVICES:= xilinx:xil-accel-rd-ku115:4ddr-xpr
 CXX:=$(XILINX_SDACCEL)/bin/xcpp
 endif
 
