@@ -31,13 +31,23 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //host application. The pointers in kernel parameters with the global 
 //keyword represents cl_mem objects on the FPGA DDR memory.
 
-kernel __attribute__((reqd_work_group_size(1, 1, 1)))
-void mmult( global int* in1,  //Read-only input matrix1
-            global int* in2,  //Read-only input matrix2
-            global int* out,  //Output matrix
+// kernel __attribute__((reqd_work_group_size(1, 1, 1)))
+void mmult( int* in1,  //Read-only input matrix1
+            int* in2,  //Read-only input matrix2
+            int* out,  //Output matrix
             int dim             //One dimension of the matrix
           )        
 {
+
+	#pragma HLS INTERFACE m_axi port=in1 offset=slave bundle=gmem
+	#pragma HLS INTERFACE s_axilite port=in1 bundle=control
+
+	#pragma HLS INTERFACE m_axi port=in2 offset=slave bundle=gmem
+	#pragma HLS INTERFACE s_axilite port=in2 bundle=control
+
+	#pragma HLS INTERFACE m_axi port=out offset=slave bundle=gmem
+	#pragma HLS INTERFACE s_axilite port=out bundle=control
+
     //Reads the data from DDR, performs the computation
     //and writes back the result to DDR.
     for (int i = 0 ; i < dim ; i++){

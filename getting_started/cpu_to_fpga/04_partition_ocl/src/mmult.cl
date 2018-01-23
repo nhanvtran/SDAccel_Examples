@@ -44,9 +44,19 @@ void mmult( __global int* in1,  //Read-only input matrix1
     //Local memory to store input matrices
     //Local memory is implemented as BRAM memory blocks
     //Complete partition done on dim 2 for in1, on dim 1 for in2 and on dim 2 for out
-    __local int local_in1[MAX_SIZE][MAX_SIZE] __attribute__((xcl_array_partition(complete, 2))); 
-    __local int local_in2[MAX_SIZE][MAX_SIZE] __attribute__((xcl_array_partition(complete, 1)));
-    __local int local_out[MAX_SIZE][MAX_SIZE] __attribute__((xcl_array_partition(complete, 2)));
+    
+    // ----- OLD CODE (OpenCL) -----
+    // __local int local_in1[MAX_SIZE][MAX_SIZE] __attribute__((xcl_array_partition(complete, 2))); 
+    // __local int local_in2[MAX_SIZE][MAX_SIZE] __attribute__((xcl_array_partition(complete, 1)));
+    // __local int local_out[MAX_SIZE][MAX_SIZE] __attribute__((xcl_array_partition(complete, 2)));
+    
+    // ----- NEW CODE (HLS + OpenCL Hybrid) -----    
+    __local int local_in1[MAX_SIZE][MAX_SIZE];
+    __local int local_in2[MAX_SIZE][MAX_SIZE];
+    __local int local_out[MAX_SIZE][MAX_SIZE];
+    #pragma HLS array_partition variable=local_in1 complete dim=2
+    #pragma HLS array_partition variable=local_in2 complete dim=1
+    #pragma HLS array_partition variable=local_out complete dim=2
 
     //Burst reads on input matrices from DDR memory
     //Burst read for matrix local_in1 and local_in2

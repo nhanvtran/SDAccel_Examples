@@ -42,7 +42,7 @@ arrays are partitioned and the innermost loop is unrolled in the kernel.
 #define MAX_SIZE 64
 
 //Array Size to access 
-#define DATA_SIZE 64 
+#define DATA_SIZE 4 
 
 uint64_t get_duration_ns (const cl::Event &event) {
     uint64_t nstimestart, nstimeend;
